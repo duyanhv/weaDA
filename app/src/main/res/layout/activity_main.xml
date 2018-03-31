@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    tools:ignore="MergeRootFrame"
+    android:background="#add7f6"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/cityText"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/thumbnailIcon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        />
+
+    <TextView
+
+        android:id="@+id/tempText"
+        android:textColor="#fff"
+        android:layout_gravity="center"
+        android:textStyle="normal"
+        android:textSize="42sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        />
+
+    <TextView
+        android:id="@+id/windText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#fff"
+        />
+
+    <TextView
+        android:id="@+id/cloudText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/pressureText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/humidText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/riseText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        />
+
+
+    <TextView
+        android:id="@+id/setText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/updateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textSize="26sp"
+        android:layout_gravity="center"
+        />
+
+
+
+<Button
+    android:id="@+id/change_cityId"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/change_city"
+    android:layout_gravity="center"
+    />
+
+</LinearLayout>

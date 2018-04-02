@@ -24,6 +24,7 @@ public class WeatherHttpClient {
 
             StringBuffer stringBuffer = new StringBuffer();
             inputStream = connection.getInputStream();
+
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line = null;
 
@@ -40,8 +41,11 @@ public class WeatherHttpClient {
 
         } catch (IOException e) {
             e.printStackTrace();
+
         }
 
+        String error = "Error";
+//        return error;
         return null;
     }
 }

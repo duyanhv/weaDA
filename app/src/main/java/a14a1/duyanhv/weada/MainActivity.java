@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String data = ((new WeatherHttpClient()).getWeatherData(params[0]));
 
             weather = JSONWeatherParser.getWeather(data);
-
+            Log.v("Weather", weather +"");
             weather.iconData = weather.currentCondition.getIcon();
 
 //            Log.v("Data: ", weather.place.getCity());

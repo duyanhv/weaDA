@@ -8,6 +8,7 @@
     tools:ignore="MergeRootFrame"
     android:background="#add7f6"
     android:orientation="vertical"
+
     >
 
     <TextView
@@ -43,7 +44,7 @@
         android:id="@+id/windText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="25sp"
         android:textColor="#fff"
         />
 
@@ -52,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
-        android:textSize="16sp"
+        android:textSize="25sp"
         />
 
     <TextView
@@ -60,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
-        android:textSize="16sp"
+        android:textSize="25sp"
         />
 
     <TextView
@@ -68,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
-        android:textSize="16sp"
+        android:textSize="25sp"
         />
 
     <TextView
@@ -76,7 +77,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
-        android:textSize="16sp"
+        android:textSize="25sp"
         />
 
 
@@ -85,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
-        android:textSize="16sp"
+        android:textSize="25sp"
         />
 
     <TextView
@@ -93,18 +94,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#fff"
-        android:textSize="26sp"
+        android:textSize="20sp"
         android:layout_gravity="center"
         />
 
 
 
-<Button
-    android:id="@+id/change_cityId"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/change_city"
-    android:layout_gravity="center"
-    />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/change_cityId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/change_city"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            />
+
+        <Button
+            android:id="@+id/btnGps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/fromGPS"
+            />
+    </LinearLayout>
+
 
 </LinearLayout>

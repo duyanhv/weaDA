@@ -1,9 +1,21 @@
 package a14a1.duyanhv.weada;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,7 +37,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import Util.Utils;
 import data.CityPreference;
@@ -45,6 +62,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView sunset;
     private TextView updated;
     private Button btnChangeCity;
+    private Button btnGps;
+
+    private LocationManager locationMangaer = null;
+    private LocationListener locationListener = null;
+
+    private Boolean flag = false;
+
 
     Weather weather = new Weather();
 
@@ -58,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         renderWeatherData(cityPreference.getCity());
 
+
+        locationMangaer = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
     }
 
     private void initViews() {
@@ -73,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updated = findViewById(R.id.updateText);
         btnChangeCity = findViewById(R.id.change_cityId);
         btnChangeCity.setOnClickListener(this);
+        btnGps = findViewById(R.id.btnGps);
+        btnGps.setOnClickListener(this);
     }
 
 
@@ -83,9 +112,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.change_cityId:
                 showInputDialog();
+
+                break;
+
+            case R.id.btnGps:
+                flag = displayGpsStatus();
+
+                locationListener = new MyLocationListener();
+
+                if (flag) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                    locationMangaer.requestLocationUpdates(LocationManager
+                            .GPS_PROVIDER, 5000, 10, locationListener);
+
+                    renderWeatherData(cityName.getText().toString());
+
+                }else{
+                    alertbox("Gps Status!!", "Your GPS is: OFF");
+                }
 
                 break;
         }
@@ -159,10 +215,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.onPostExecute(weather);
 
             DateFormat df = DateFormat.getTimeInstance();
+//            DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            df2.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+
 
             String sunriseDate = df.format(new Date(weather.place.getSunrise()));
             String sunsetDate = df.format(new Date(weather.place.getSunset()));
             String lastUpdated = df.format(new Date(weather.place.getLastupdate()));
+
+//            String sunriseDate = df2.parse(new Date(weather.place.getSunrise()));
+//            String sunsetDate = df.format(new Date(weather.place.getSunset()));
+//            String lastUpdated = df.format(new Date(weather.place.getLastupdate()));
 
             //rounded to 1 decimal point
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
@@ -204,6 +268,104 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         builder.show();
+    }
+
+    //============================================================
+
+    /*----Method to Check GPS is enable or disable ----- */
+    private Boolean displayGpsStatus() {
+        ContentResolver contentResolver = getBaseContext()
+                .getContentResolver();
+        boolean gpsStatus = Settings.Secure
+                .isLocationProviderEnabled(contentResolver,
+                        LocationManager.GPS_PROVIDER);
+        if (gpsStatus) {
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    /*----------Method to create an AlertBox ------------- */
+    protected void alertbox(String title, String mymessage) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setMessage("Your Device's GPS is Disable")
+                .setCancelable(false)
+                .setTitle("** Gps Status **")
+                .setPositiveButton("Gps On",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // finish the current activity
+                                // AlertBoxAdvance.this.finish();
+                                Intent myIntent = new Intent(
+                                        Settings.ACTION_SECURITY_SETTINGS);
+                                startActivity(myIntent);
+                                dialog.cancel();
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // cancel the dialog box
+                                dialog.cancel();
+                            }
+                        });
+        android.app.AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+
+    private class MyLocationListener implements LocationListener{
+
+
+        @Override
+        public void onLocationChanged(Location location) {
+//            Log.v("Cityname: ",getCityNameFromGPS(location));
+            getCityNameFromGPS(location);
+
+        }
+
+        private String getCityNameFromGPS(Location loc){
+
+            String cityName1=null;
+            Geocoder gcd = new Geocoder(getBaseContext(),
+                    Locale.getDefault());
+            List<Address> addresses;
+            try {
+                addresses = gcd.getFromLocation(loc.getLatitude(), loc
+                        .getLongitude(), 1);
+                if (addresses.size() > 0)
+                    System.out.println(addresses.get(0).getLocality());
+                cityName1=addresses.get(0).getLocality();
+
+                cityName.setText(cityName1);
+
+//                return cityName1;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
     }
 
 
